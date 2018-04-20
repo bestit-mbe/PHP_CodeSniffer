@@ -12,7 +12,7 @@ use SlevomatCodingStandard\Sniffs\TestCase as SlevomatTestCase;
  *
  * @package Tests\BestIt\Sniffs
  *
- * @author Nick Lubisch <nick.lubisch@bestit-online.de>
+ * @author  Nick Lubisch <nick.lubisch@bestit-online.de>
  */
 abstract class SniffTestCase extends SlevomatTestCase
 {
@@ -37,7 +37,7 @@ abstract class SniffTestCase extends SlevomatTestCase
      *
      * @return void
      */
-    protected function assertAllFixedInFile(File $codeSnifferFile)
+    protected function assertAllFixedInFile(File $codeSnifferFile): void
     {
         $codeSnifferFile->fixer->fixFile();
 
@@ -50,10 +50,10 @@ abstract class SniffTestCase extends SlevomatTestCase
     /**
      * Tests files with given error list and fixes them.
      *
-     * @param string $file File to test
-     * @param string $error Error code
-     * @param int[] $lines All lines where the error code occurs
-     * @param array $sniffProperties Array of sniff properties
+     * @param string $file            File to test
+     * @param string $error           Error code
+     * @param int[]  $lines           All lines where the error code occurs
+     * @param array  $sniffProperties Array of sniff properties
      *
      * @return void
      */
@@ -71,10 +71,10 @@ abstract class SniffTestCase extends SlevomatTestCase
     /**
      * Asserts all errors in a given file.
      *
-     * @param string $file Filename of the fixture
-     * @param string $error Error code
-     * @param int[] $lines Array of lines where the error code occurs
-     * @param array $sniffProperties Array of sniff properties
+     * @param string $file            Filename of the fixture
+     * @param string $error           Error code
+     * @param int[]  $lines           Array of lines where the error code occurs
+     * @param array  $sniffProperties Array of sniff properties
      *
      * @return File The php cs file
      */
@@ -124,7 +124,7 @@ abstract class SniffTestCase extends SlevomatTestCase
     public function getFixturePath(): string
     {
         $fqTestClassName = get_class($this);
-        $fqTestClassNameParts  = explode('\\', $fqTestClassName);
+        $fqTestClassNameParts = explode('\\', $fqTestClassName);
 
         $sniffsIndex = array_search('BestIt', $fqTestClassNameParts, true);
 
@@ -139,7 +139,7 @@ abstract class SniffTestCase extends SlevomatTestCase
             __DIR__,
             $additionalPath,
             'Fixtures',
-            $className
+            $className,
         ];
 
         return implode(DIRECTORY_SEPARATOR, $basePathParts);
@@ -180,8 +180,8 @@ abstract class SniffTestCase extends SlevomatTestCase
     /**
      * Checks the given file with defined error codes.
      *
-     * @param string $file Filename of the fixture
-     * @param array $sniffProperties Array of sniff properties
+     * @param string $file            Filename of the fixture
+     * @param array  $sniffProperties Array of sniff properties
      *
      * @return File The php cs file
      */
