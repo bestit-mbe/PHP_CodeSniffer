@@ -18,4 +18,10 @@
 
     <rule ref="Squiz.Strings.DoubleQuoteUsage" />
 
+    <rule ref="BestIt.TypeHints.TypeHintDeclaration">
+        <properties>
+            <property name="enableNullableTypeHints" value="false"/>
+            <property name="enableVoidTypeHint" value="false"/>
+        </properties>
+    </rule>
 </ruleset>

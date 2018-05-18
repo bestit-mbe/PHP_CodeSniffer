@@ -76,9 +76,6 @@ class TypeHintDeclarationSniff extends BaseSniff
      */
     public function __construct()
     {
-        $this->enableVoidTypeHint = false;
-        $this->enableNullableTypeHints = false;
-
         $this->suppressHelper = new SuppressHelper();
         $this->functionHelper = new FunctionHelper();
         $this->typeHintHelper = new TypeHintHelper();
@@ -145,6 +142,8 @@ class TypeHintDeclarationSniff extends BaseSniff
             );
         }
 
+        $this->checkVoidAndNullTypeHints($returnTypeHintDef, $returnsValue);
+
         if (!$hasReturnAnnotation || !$returnsValue) {
             return;
         }
@@ -173,6 +172,91 @@ class TypeHintDeclarationSniff extends BaseSniff
                 $possibleReturnType,
                 $nullableReturnType
             );
+
+            return;
+        }
+
+        $this->checkNullableType($returnTypeHintDef);
+    }
+
+    /**
+     * Check if a nullable type can be set, else add a warning
+     *
+     * @param string $returnTypeHintDef The return annotation type hints
+     *
+     * @return void
+     */
+    private function checkNullableType(string $returnTypeHintDef)
+    {
+        if ($this->enableNullableTypeHints
+            && $this->definitionIsNullable($returnTypeHintDef)
+        ) {
+            $typeHintDefParts = explode('|', $returnTypeHintDef);
+            $possibleReturnType = $typeHintDefParts[0];
+
+            if (strtolower($typeHintDefParts[0]) === 'null') {
+                $possibleReturnType = $typeHintDefParts[1];
+            }
+
+            $this->phpcsFile->addWarning(
+                sprintf(
+                    '%s %s() does not have a return type hint for its return value'
+                    . ' but it should be possible to set : ?%s.',
+                    $this->getFunctionTypeLabel($this->phpcsFile, $this->pointer),
+                    $this->functionHelper::getName($this->phpcsFile, $this->pointer),
+                    $possibleReturnType
+                ),
+                $this->pointer,
+                self::CODE_MISSING_RETURN_TYPE_HINT
+            );
+        }
+    }
+
+    /**
+     * Check if the return annotation consists of two types and is nullable
+     *
+     * @param string $typeHintDef The return annotation type hints
+     *
+     * @return bool True return annotation has one nullable type
+     */
+    private function definitionIsNullable(string $typeHintDef): bool
+    {
+        $hasTwoTypeHints = substr_count($typeHintDef, '|') === 1;
+        $hasNullTypeHint = preg_match('~(?:^null$)|(?:^null\|)|(?:\|null\|)|(?:\|null$)~i', $typeHintDef) !== 0;
+        return $hasTwoTypeHints && $hasNullTypeHint;
+    }
+
+    /**
+     * Add warnings if void or null are support but not set
+     *
+     * @param string $returnTypeHintDef Return annotation type
+     * @param bool $returnsValue Method has a return value
+     *
+     * @return void
+     */
+    private function checkVoidAndNullTypeHints(string $returnTypeHintDef, bool $returnsValue)
+    {
+        $withoutVoidSupport = ['__construct' => true, '__destruct' => true, '__clone' => true];
+
+        $addVoidWarning = $this->enableVoidTypeHint && $returnTypeHintDef === 'void' && !$returnsValue
+            && !array_key_exists(
+                $this->functionHelper::getName($this->phpcsFile, $this->pointer),
+                $withoutVoidSupport
+            );
+
+        $addNullWarning = $this->enableNullableTypeHints && $returnTypeHintDef === 'null' && $returnsValue;
+
+        if ($addVoidWarning || $addNullWarning) {
+            $this->phpcsFile->addWarning(
+                sprintf(
+                    ':%s can be declared as a return type hint to %s()',
+                    $returnTypeHintDef,
+                    $this->functionHelper::getName($this->phpcsFile, $this->pointer)
+                ),
+                $this->pointer,
+                self::CODE_MISSING_RETURN_TYPE_HINT
+            );
+            return;
         }
     }
 
