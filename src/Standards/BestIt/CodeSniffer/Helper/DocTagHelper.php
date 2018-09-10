@@ -59,7 +59,7 @@ class DocTagHelper
     private $stackPtr;
 
     /**
-     * DocSummaryHelper constructor.
+     * DocTagHelper constructor.
      *
      * @param File $file The php cs file
      * @param DocHelper $docHelper The doc comment helper
