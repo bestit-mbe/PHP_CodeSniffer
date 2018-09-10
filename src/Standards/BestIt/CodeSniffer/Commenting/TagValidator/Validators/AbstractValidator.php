@@ -33,24 +33,23 @@ abstract class AbstractValidator implements ValidatorInterface
     }
 
     /**
-     * Validates the tag content.
+     * Validates the tag content and registers errors/warnings if needed.
      *
      * @param array $tagToken Token data of the current token
-     * @param int $contentPtr Pointer to the tag content
      * @param array|null $contentToken Token of the tag content
      *
      * @return void
      */
-    public function validate(array $tagToken, int $contentPtr, $contentToken)
+    public function validate(array $tagToken, $contentToken): void
     {
-        $result = false;
+        $isValid = false;
 
-        if ($contentPtr !== -1) {
+        if ($contentToken) {
             $content = $contentToken['content'];
-            $result = $this->validateContent($content);
+            $isValid = $this->validateContent($content);
         }
 
-        if (!$result) {
+        if (!$isValid) {
             $this->addInvalidFormatError($tagToken, $this->getExpectedContent());
         }
     }
