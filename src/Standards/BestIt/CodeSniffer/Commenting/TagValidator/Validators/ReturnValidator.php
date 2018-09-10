@@ -54,6 +54,7 @@ class ReturnValidator extends AbstractValidator
             return true;
         }
 
+        // TODO This would support whitespace(s) as valid comment. Use count(explode) >= 2 or regex.
         if (substr_count($content, ' ') >= 1) {
             return true;
         }
