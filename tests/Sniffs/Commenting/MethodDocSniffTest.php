@@ -167,6 +167,12 @@ class MethodDocSniffTest extends SniffTestCase
                 MethodDocSniff::CODE_TAG_OCCURRENCE_MAX,
                 [13]
             ],
+
+            MethodDocSniff::CODE_TAG_CONTENT_FORMAT_INVALID => [
+                'WrongFormatInReturnSummary.php',
+                MethodDocSniff::CODE_TAG_CONTENT_FORMAT_INVALID,
+                [16, 26]
+            ]
         ];
 
         return array_merge(
@@ -278,7 +284,8 @@ class MethodDocSniffTest extends SniffTestCase
                 MethodDocSniff::CODE_DESCRIPTION_UC_FIRST,
                 MethodDocSniff::CODE_NO_LINE_AFTER_TAG,
                 MethodDocSniff::CODE_MUCH_LINES_AFTER_TAG,
-                MethodDocSniff::CODE_NO_LINES_AROUND_TAG_GROUP
+                MethodDocSniff::CODE_NO_LINES_AROUND_TAG_GROUP,
+                MethodDocSniff::CODE_TAG_CONTENT_FORMAT_INVALID,
             ]
         );
     }
